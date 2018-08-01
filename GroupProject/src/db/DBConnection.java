@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import application.*;
+import jbcrypt.BCrypt;
 
 public class DBConnection {
 	private String dbURL = "jdbc:mysql://localhost:3306/projectschema";
@@ -115,8 +116,8 @@ public class DBConnection {
 				String dbPassword = resultSet.getString( "password" );
 				String dbEmail = resultSet.getString( "email" );
 				
-				if( ( handle.equals( dbUsername ) && password.equals( dbPassword ) ) || 
-					( handle.equals( dbEmail ) && password.equals( dbPassword ) ) ) {
+				if( ( handle.equals( dbUsername ) && BCrypt.checkpw( password, dbPassword ) ) || 
+					( handle.equals( dbEmail ) && BCrypt.checkpw( password, dbPassword ) ) ) {
 					
 					connection.close();
 					prepStatement.close();
