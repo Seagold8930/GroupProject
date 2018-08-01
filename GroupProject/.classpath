@@ -5,5 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="D:/Program Files/Java/mysql-connector-java-5.1.46/mysql-connector-java-5.1.46-bin.jar"/>
 	<classpathentry kind="lib" path="D:/Program Files/Java/jBCrypt-0.4.zip"/>
+	<classpathentry kind="lib" path="D:/Program Files/Java/jdk1.8.0_181/jre/lib/ext/jfxrt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
