@@ -1,13 +1,13 @@
 package gui;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.embed.swing.SwingFXUtils;
@@ -29,16 +29,19 @@ import javafx.scene.layout.VBox;
 public class SignUpGUI {
 	private static JFrame frame;
 	private static JFXPanel fxPanel;
-	private static URL logoURL = LoginGUI.class.getResource( "/resources/images/clock.png" );
-	private static URL iconURL = LoginGUI.class.getResource( "/resources/images/clockIcon.png" );
+	private static final URL ICON_URL = LoginGUI.class.getResource( "/resources/images/clockIcon.png" );
+	private static final URL LOGO_URL = LoginGUI.class.getResource( "/resources/images/clock.png" );
 	private static final String STYLE = "GoldRush.css";
 	private static Label lblWarning;
 	
+	/**
+	 * 
+	 */
 	public void initAndShowSignUpGUI() {
         frame = new JFrame( "GoldRush" );
         
         try {
-			BufferedImage icon = ImageIO.read( iconURL );
+			BufferedImage icon = ImageIO.read( ICON_URL );
 			frame.setIconImage( icon );
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -47,9 +50,11 @@ public class SignUpGUI {
         fxPanel = new JFXPanel();
         frame.add( fxPanel );
         frame.setSize( 700, 400 );
-        frame.setVisible( true );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation( dimension.width / 2 - frame.getSize().width  /2, dimension.height / 2 - frame.getSize().height / 2 );
+        frame.setVisible( true );
+        
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -58,11 +63,19 @@ public class SignUpGUI {
        });
     }
 	
+	/**
+	 * 
+	 * @param fxPanel
+	 */
 	private static void initAndShowSignUpGUI( JFXPanel fxPanel ) {
         Scene signUpScene = createSignUpScene();
         fxPanel.setScene( signUpScene );
     }
 	
+	/**
+	 * 
+	 * @return
+	 */
 	private static Scene createSignUpScene() {
 		GridPane sGrid = new GridPane();
         sGrid.setAlignment( Pos.CENTER );
@@ -74,7 +87,7 @@ public class SignUpGUI {
         scene.getStylesheets().add( SignUpGUI.class.getResource( STYLE ).toExternalForm() );
         
         try {
-			BufferedImage logo = ImageIO.read( logoURL );
+			BufferedImage logo = ImageIO.read( LOGO_URL );
 			Image image = SwingFXUtils.toFXImage( logo, null );
 			ImageView myImage = new ImageView();
 			myImage.setImage( image );
@@ -112,20 +125,29 @@ public class SignUpGUI {
         lblWarning = new Label();
         lblWarning.setId( "warning-label" );
         
-        Button btnCancel = new Button( "Cancel" );
-        btnCancel.setId( "custom-button" );
-        Button btnRegister = new Button( "Register" );
-        btnRegister.setId( "custom-button" );
-        
         VBox vbox = new VBox( 10 );
         vbox.setPrefWidth( 400 );
         vbox.getChildren().addAll( txtUsername, pwdPassword, pwdConfirmPassword, txtEmail, txtConfirmEmail, lblWarning );
         sGrid.add( vbox, 1, 0 );
         
+        Button btnCancel = new Button( "Cancel" );
+        btnCancel.setId( "custom-button" );
+        Button btnRegister = new Button( "Register" );
+        btnRegister.setId( "custom-button" );
+        
         HBox hbButtons = new HBox( 10 );
         hbButtons.setAlignment( Pos.BOTTOM_RIGHT );
         hbButtons.getChildren().addAll( btnCancel, btnRegister );
         sGrid.add( hbButtons, 1, 1 );
+        
+        btnCancel.setOnAction( new EventHandler< ActionEvent >() {
+            @Override
+            public void handle( ActionEvent event ) {
+            	frame.setVisible( false );
+            	LoginGUI obj = new LoginGUI();
+            	obj.showLoginGUI();
+            }
+        });
         
         return scene;
     }

@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -25,20 +27,25 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 public class LoginGUI {
 	private static JFrame frame;
 	private static JFXPanel fxPanel;
-	private static URL iconURL = LoginGUI.class.getResource( "/resources/images/clockIcon.png" );
-	private static URL logoURL = LoginGUI.class.getResource( "/resources/images/clock.png" );
+	private static final URL ICON_URL = LoginGUI.class.getResource( "/resources/images/clockIcon.png" );
+	private static final URL LOGO_URL = LoginGUI.class.getResource( "/resources/images/clock.png" );
 	private static final String STYLE = "GoldRush.css";
 	private static Label lblWarning;
+	private static final int USERNAME_MAX = 45;
 	
+	/**
+	 * 
+	 */
 	private static void initAndShowGUI() {
         frame = new JFrame( "GoldRush" );
         
         try {
-			BufferedImage icon = ImageIO.read( iconURL );
+			BufferedImage icon = ImageIO.read( ICON_URL );
 			frame.setIconImage( icon );
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -47,22 +54,32 @@ public class LoginGUI {
         fxPanel = new JFXPanel();
         frame.add( fxPanel );
         frame.setSize( 300, 600 );
-        frame.setVisible( true );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation( dimension.width / 2 - frame.getSize().width  /2, dimension.height / 2 - frame.getSize().height / 2 );
+        frame.setVisible( true );
+        
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-            	initAndShowGUI( fxPanel );
+            	initAndShowLoginGUI( fxPanel );
             }
        });
     }
 	
-	private static void initAndShowGUI( JFXPanel fxPanel ) {
+	/**
+	 * 
+	 * @param fxPanel
+	 */
+	private static void initAndShowLoginGUI( JFXPanel fxPanel ) {
         Scene loginScene = createLoginScene();
         fxPanel.setScene( loginScene );
     }
 	
+	/**
+	 * 
+	 * @return
+	 */
 	private static Scene createLoginScene() {
 		final GridPane lGrid = new GridPane();
         lGrid.setAlignment( Pos.CENTER );
@@ -74,7 +91,7 @@ public class LoginGUI {
         scene.getStylesheets().add( LoginGUI.class.getResource( STYLE ).toExternalForm() );
         
         try {
-			BufferedImage logo = ImageIO.read( logoURL );
+			BufferedImage logo = ImageIO.read( LOGO_URL );
 			Image image = SwingFXUtils.toFXImage( logo, null );
 			ImageView myImage = new ImageView();
 			myImage.setImage( image );
@@ -87,30 +104,24 @@ public class LoginGUI {
         TextField txtUsername = new TextField();
         txtUsername.setPromptText( "Username" );
         txtUsername.setId( "custom-field" );
-        HBox hbUser = new HBox( 10 );
-        hbUser.setAlignment( Pos.CENTER );
-        hbUser.getChildren().add( txtUsername );
-        lGrid.add( hbUser, 0, 2 );
         
         PasswordField pwdPassword = new PasswordField();
         pwdPassword.setPromptText( "Password ");
         pwdPassword.setId( "custom-field" );
-        HBox hbPass = new HBox( 10 );
-        hbPass.setAlignment( Pos.CENTER );
-        hbPass.getChildren().add( pwdPassword );
-        lGrid.add( hbPass, 0, 3 );
         
         lblWarning = new Label();
         lblWarning.setId( "warning-label" );
-        HBox hbLblPass = new HBox( 10 );
-        hbLblPass.setAlignment( Pos.CENTER );
-        hbLblPass.getChildren().add( lblWarning );
-        lGrid.add( hbLblPass, 0, 4 );
+        
+        VBox vbox = new VBox( 10 );
+        vbox.setAlignment( Pos.CENTER );
+        vbox.getChildren().addAll( txtUsername, pwdPassword, lblWarning );
+        lGrid.add( vbox, 0, 3 );
         
         Button btnLogin = new Button( "Login" );
         btnLogin.setId( "custom-button" );
         Button btnSingup = new Button( "Sign-up" );
         btnSingup.setId( "custom-button" );
+        
         HBox hbButtons = new HBox( 10 );
         hbButtons.setAlignment( Pos.CENTER );
         hbButtons.getChildren().addAll( btnLogin, btnSingup );
@@ -121,12 +132,16 @@ public class LoginGUI {
         	public void handle( ActionEvent event ) {
                 lblWarning.setText( null );
                 
-                if( authenticate( txtUsername.getText(), pwdPassword.getText() ) ) {
-                	txtUsername.clear();
-                    pwdPassword.clear();
-                    //TODO
+                if( validate( txtUsername.getText() ) ) {
+                	if( authenticate( txtUsername.getText(), pwdPassword.getText() ) ) {
+	                	txtUsername.clear();
+	                    pwdPassword.clear();
+	                    //TODO
+	                } else {
+	                	lblWarning.setText( "Invalid username/password" );
+	                }
                 } else {
-                	lblWarning.setText( "Invalid username/password" );
+                	lblWarning.setText( "Invalid username" );
                 }
             }
         });
@@ -143,6 +158,26 @@ public class LoginGUI {
         return scene;
     }	
 	
+	/**
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static boolean validate( String input ) {
+		
+		if( ! input.matches( "[a-zA-Z0-9_.@]+{45}" )  || input.length() > USERNAME_MAX ) {
+			return false;
+		}
+		
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param handle
+	 * @param password
+	 * @return
+	 */
 	private static boolean authenticate( String handle, String password ) {
 		DBConnection obj = new DBConnection();
 		
@@ -152,7 +187,18 @@ public class LoginGUI {
 		
 		return false;
 	}
-
+	
+	/**
+	 * 
+	 */
+	public void showLoginGUI() {
+		initAndShowGUI();
+	}
+	
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override

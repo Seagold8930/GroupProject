@@ -32,6 +32,7 @@
 }
 
 #custom-field {
+	-fx-border-color: black;
 	-fx-prompt-text-fill: white;
 	-fx-text-fill: white;
 	-fx-background-color: #EEA10B;
