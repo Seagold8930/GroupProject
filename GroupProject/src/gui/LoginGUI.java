@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import application.ValidateInput;
 import db.DBConnection;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -36,7 +37,6 @@ public class LoginGUI {
 	private static final URL LOGO_URL = LoginGUI.class.getResource( "/resources/images/clock.png" );
 	private static final String STYLE = "GoldRush.css";
 	private static Label lblWarning;
-	private static final int USERNAME_MAX = 45;
 	
 	/**
 	 * 
@@ -132,7 +132,7 @@ public class LoginGUI {
         	public void handle( ActionEvent event ) {
                 lblWarning.setText( null );
                 
-                if( validate( txtUsername.getText() ) ) {
+                if( ValidateInput.validateUsername( txtUsername.getText() ) ) {
                 	if( authenticate( txtUsername.getText(), pwdPassword.getText() ) ) {
 	                	txtUsername.clear();
 	                    pwdPassword.clear();
@@ -157,20 +157,6 @@ public class LoginGUI {
         
         return scene;
     }	
-	
-	/**
-	 * 
-	 * @param input
-	 * @return
-	 */
-	public static boolean validate( String input ) {
-		
-		if( ! input.matches( "[a-zA-Z0-9_.@]+{45}" )  || input.length() > USERNAME_MAX ) {
-			return false;
-		}
-		
-		return true;
-	}
 
 	/**
 	 * 
@@ -181,7 +167,7 @@ public class LoginGUI {
 	private static boolean authenticate( String handle, String password ) {
 		DBConnection obj = new DBConnection();
 		
-		if ( obj.login(handle, password) ) {
+		if ( obj.login( handle, password ) ) {
 			return true;
 		}
 		

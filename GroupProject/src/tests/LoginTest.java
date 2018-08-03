@@ -22,7 +22,7 @@ class LoginTest {
 	void test() {
 		DBConnection dbConnection = new DBConnection();
 		
-		assertEquals( true, dbConnection.login( "joe.doe", "1234" ) );
-		assertEquals( false, dbConnection.login( "joe.doe", "4321" ) );
+		assertEquals( true, dbConnection.login( "john.doe", "1234" ) );
+		assertEquals( false, dbConnection.login( "john.doe", "4321" ) );
 	}
 }

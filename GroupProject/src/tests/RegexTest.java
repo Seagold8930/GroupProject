@@ -4,25 +4,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import gui.LoginGUI;
+import application.ValidateInput;
 
 class RegexTest {
 
 	@Test
 	void test() {
-		String[] test = { "DanMota0", "Dan.Mota1", "Dan_Mota2", "Dan@Mota3", "Dan Mota 4", "Dan;Mota5", "Dan/Mota6", "Dan<Mota7" };
+		String[] letters = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", 
+							 "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+		String[] numbers = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+		String[] validCharacters = { "_", ".", "-", "@" };
+		String[] invalidCharacters = { "~", "`", "!", "#", "$", "%", "^", "&", "*", "(", ")", "+", "=", ",", ";", "'", ":", "\"" };
 		
-		LoginGUI obj = new LoginGUI();
+		for( int i = 0; i < letters.length; i++ ) {
+			assertEquals( true, ValidateInput.validateUsername( letters[i] ) );
+		}
 		
-		assertEquals( true, obj.validate( test[ 0 ] ) );
-		assertEquals( true, obj.validate( test[ 1 ] ) );
-		assertEquals( true, obj.validate( test[ 2 ] ) );
-		assertEquals( true, obj.validate( test[ 3 ] ) );
-		assertEquals( false, obj.validate( test[ 4 ] ) );
-		assertEquals( false, obj.validate( test[ 5 ] ) );
-		assertEquals( false, obj.validate( test[ 6 ] ) );
-		assertEquals( false, obj.validate( test[ 7 ] ) );
+		for( int i = 0; i < numbers.length; i++ ) {
+			assertEquals( true, ValidateInput.validateUsername( numbers[i] ) );
+		}
 		
+		for( int i = 0; i < validCharacters.length; i++ ) {
+			assertEquals( true, ValidateInput.validateUsername( validCharacters[i] ) );
+		}
+		
+		for( int i = 0; i < invalidCharacters.length; i++ ) {
+			assertEquals( false, ValidateInput.validateUsername( invalidCharacters[i] ) );
+		}
 	}
 
 }
