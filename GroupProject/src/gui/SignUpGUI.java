@@ -2,12 +2,15 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+
+import application.User;
+import application.ValidateInput;
+import db.DBConnection;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.embed.swing.SwingFXUtils;
@@ -16,15 +19,17 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import jbcrypt.BCrypt;
 
 public class SignUpGUI {
 	private static JFrame frame;
@@ -32,6 +37,11 @@ public class SignUpGUI {
 	private static final URL ICON_URL = LoginGUI.class.getResource( "/resources/images/clockIcon.png" );
 	private static final URL LOGO_URL = LoginGUI.class.getResource( "/resources/images/clock.png" );
 	private static final String STYLE = "GoldRush.css";
+	private static TextField txtUsername;
+	private static PasswordField pwdPassword;
+	private static PasswordField pwdConfirmPassword;
+	private static TextField txtEmail;
+	private static TextField txtConfirmEmail;
 	private static Label lblWarning;
 	
 	/**
@@ -41,8 +51,7 @@ public class SignUpGUI {
         frame = new JFrame( "GoldRush" );
         
         try {
-			BufferedImage icon = ImageIO.read( ICON_URL );
-			frame.setIconImage( icon );
+			frame.setIconImage( ImageIO.read( ICON_URL ) );
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -68,8 +77,7 @@ public class SignUpGUI {
 	 * @param fxPanel
 	 */
 	private static void initAndShowSignUpGUI( JFXPanel fxPanel ) {
-        Scene signUpScene = createSignUpScene();
-        fxPanel.setScene( signUpScene );
+        fxPanel.setScene( createSignUpScene() );
     }
 	
 	/**
@@ -87,37 +95,35 @@ public class SignUpGUI {
         scene.getStylesheets().add( SignUpGUI.class.getResource( STYLE ).toExternalForm() );
         
         try {
-			BufferedImage logo = ImageIO.read( LOGO_URL );
-			Image image = SwingFXUtils.toFXImage( logo, null );
 			ImageView myImage = new ImageView();
-			myImage.setImage( image );
+			myImage.setImage( SwingFXUtils.toFXImage( ImageIO.read( LOGO_URL ), null ) );
 			sGrid.add( myImage, 0, 0 );
 			
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
         
-        TextField txtUsername = new TextField();
+        txtUsername = new TextField();
         txtUsername.prefWidth( 400 );
         txtUsername.setPromptText( "Username" );
         txtUsername.setId( "custom-field" );
         
-        PasswordField pwdPassword = new PasswordField();
+        pwdPassword = new PasswordField();
         pwdPassword.prefWidth( 400 );
         pwdPassword.setPromptText( "Password ");
         pwdPassword.setId( "custom-field" );
         
-        PasswordField pwdConfirmPassword = new PasswordField();
+        pwdConfirmPassword = new PasswordField();
         pwdConfirmPassword.prefWidth( 400 );
         pwdConfirmPassword.setPromptText( "Confirm Password ");
         pwdConfirmPassword.setId( "custom-field" );
         
-        TextField txtEmail =  new TextField();
+        txtEmail =  new TextField();
         txtEmail.prefWidth( 400 );
         txtEmail.setPromptText( "Email" );
         txtEmail.setId( "custom-field" );
         
-        TextField txtConfirmEmail =  new TextField();
+        txtConfirmEmail =  new TextField();
         txtConfirmEmail.prefWidth( 400 );
         txtConfirmEmail.setPromptText( "Confirm Email" );
         txtConfirmEmail.setId( "custom-field" );
@@ -149,6 +155,80 @@ public class SignUpGUI {
             }
         });
         
+        btnRegister.setOnAction( new EventHandler< ActionEvent >() {
+            @Override
+            public void handle( ActionEvent event ) {
+            	lblWarning.setText( null );
+            	evaluateResult( ValidateInput.validateAll( txtUsername.getText(), pwdPassword.getText(), 
+                                                           pwdConfirmPassword.getText(), txtEmail.getText(), 
+                                                           txtConfirmEmail.getText() ) );
+            }
+        });
+        
         return scene;
     }
+
+	private static void evaluateResult( int result ) {
+		switch( result ) {
+			case 1 :
+				lblWarning.setText( "Username already registered" );
+				break;
+			case 2 :
+				lblWarning.setText( "Email already registered" );
+				break;
+			case 3 :
+				lblWarning.setText( "Invalid username" );
+				break;
+			case 4 :
+				lblWarning.setText( "Password mismatch" );
+				break;
+			case 5 :
+				lblWarning.setText( "Email mismatch" );
+				break;
+			case 6 :
+				lblWarning.setText( "Invalid email" );
+				break;
+			case 0 :
+				if ( insertUserCredentials() )
+					alertAndDisplayLogin();
+				else
+					lblWarning.setText( "Error connecting to the Database" );
+				
+				break;
+		}
+		
+	}
+
+	private static boolean insertUserCredentials() {
+		User user = new User( txtUsername.getText(), BCrypt.hashpw( pwdPassword.getText(), BCrypt.gensalt() ), txtEmail.getText() );
+		DBConnection obj = new DBConnection();
+		
+		clearAllFields();
+		return obj.createUser( user );
+	}
+
+	private static void clearAllFields() {
+		txtUsername.clear();
+		pwdPassword.clear();
+		pwdConfirmPassword.clear();
+		txtEmail.clear();
+		txtConfirmEmail.clear();
+	}
+
+	private static void alertAndDisplayLogin() {
+		Alert alertSuccess = new Alert( AlertType.INFORMATION );
+		alertSuccess.setTitle( "GoldRush Registration" );
+		alertSuccess.setHeaderText( null );
+		alertSuccess.setContentText( "Registration completed successfully" );
+		
+		alertSuccess.showAndWait();
+		
+		displayLogin();
+	}
+
+	private static void displayLogin() {
+		frame.setVisible( false );
+		LoginGUI obj = new LoginGUI();
+    	obj.showLoginGUI();
+	}
 }

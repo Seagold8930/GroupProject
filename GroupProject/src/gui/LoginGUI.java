@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
@@ -24,7 +23,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -39,14 +37,16 @@ public class LoginGUI {
 	private static Label lblWarning;
 	
 	/**
-	 * 
+	 * private static void initAndShowGUI()
+	 * Purpose: Creates the frame, sets its attributes, and centers the display position
+	 * Input: NULL
+	 * Outputs: NULL
 	 */
 	private static void initAndShowGUI() {
         frame = new JFrame( "GoldRush" );
         
         try {
-			BufferedImage icon = ImageIO.read( ICON_URL );
-			frame.setIconImage( icon );
+        	frame.setIconImage( ImageIO.read( ICON_URL ) );
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -68,17 +68,20 @@ public class LoginGUI {
     }
 	
 	/**
-	 * 
-	 * @param fxPanel
+	 * private static void initAndShowLoginGUI( JFXPanel fxPanel )
+	 * Purpose: Sets the Scene into the JavaFX Panel
+	 * Input: fxPanel
+	 * Outputs: NULL
 	 */
 	private static void initAndShowLoginGUI( JFXPanel fxPanel ) {
-        Scene loginScene = createLoginScene();
-        fxPanel.setScene( loginScene );
+        fxPanel.setScene( createLoginScene() );
     }
 	
 	/**
-	 * 
-	 * @return
+	 * private static Scene createLoginScene()
+	 * Purpose: Scene builder for the login user interface
+	 * Input: NULL
+	 * Outputs: Scene
 	 */
 	private static Scene createLoginScene() {
 		final GridPane lGrid = new GridPane();
@@ -91,10 +94,8 @@ public class LoginGUI {
         scene.getStylesheets().add( LoginGUI.class.getResource( STYLE ).toExternalForm() );
         
         try {
-			BufferedImage logo = ImageIO.read( LOGO_URL );
-			Image image = SwingFXUtils.toFXImage( logo, null );
 			ImageView myImage = new ImageView();
-			myImage.setImage( image );
+			myImage.setImage( SwingFXUtils.toFXImage( ImageIO.read( LOGO_URL ), null ) );
 			lGrid.add( myImage, 0, 0 );
 			
 		} catch (IOException e) {
@@ -159,31 +160,28 @@ public class LoginGUI {
     }	
 
 	/**
-	 * 
-	 * @param handle
-	 * @param password
-	 * @return
+	 * private static boolean authenticate( String handle, String password )
+	 * Purpose: sends user input for authentication
+	 * Input: handle and password as String
+	 * Outputs: boolean
 	 */
 	private static boolean authenticate( String handle, String password ) {
-		DBConnection obj = new DBConnection();
-		
-		if ( obj.login( handle, password ) ) {
-			return true;
-		}
-		
-		return false;
+		DBConnection obj = new DBConnection();		
+		return obj.login( handle, password );
 	}
 	
 	/**
-	 * 
+	 * public void showLoginGUI()
+	 * Purpose: Used by other classes to display the login user interface
+	 * Input: NULL
+	 * Outputs: NULL
 	 */
 	public void showLoginGUI() {
 		initAndShowGUI();
 	}
 	
 	/**
-	 * 
-	 * @param args
+	 * main method
 	 */
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {

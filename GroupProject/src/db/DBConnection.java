@@ -29,8 +29,8 @@ public class DBConnection {
 	 * public int checkCredentialsConflict( User user )
 	 * Purpose: Searches the database for an existing entry which should be unique. The method returns 0 if no match is found,
 	 * 			1 if a conflict is found for username, and 2 if a conflict is found for email
-	 * @param user
-	 * @return int
+	 * Input: User object
+	 * Outputs: integer
 	 */
 	public int checkCredentialsConflict( User user ) {
 		try {
@@ -43,7 +43,6 @@ public class DBConnection {
 			ResultSet resultSet = prepStatement.executeQuery();
 			
 			while( resultSet.next() ) {
-				
 				if( user.getUsername().equals( resultSet.getString( "username" ) ) ) {
 					connection.close();
 					prepStatement.close();
@@ -61,7 +60,6 @@ public class DBConnection {
 			prepStatement.close();
 			
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
 		}
 		
@@ -71,9 +69,10 @@ public class DBConnection {
 	/**
 	 * public void createUser( User user )
 	 * Purpose: Connects to the database and inserts a new entry into the usercredentials table
-	 * @param user
+	 * Input: User object
+	 * Outputs: boolean
 	 */
-	public void createUser( User user ) {
+	public boolean createUser( User user ) {
 		try {
 			Connection connection = DriverManager.getConnection( dbURL, dbUsername, dbPassword );
 			PreparedStatement prepStatement = connection.prepareStatement( "insert into usercredentials ( username, password, email ) values ( ?, ?, ? )" );
@@ -86,10 +85,13 @@ public class DBConnection {
 			
 			prepStatement.close();
 			connection.close();
-
+			
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		return false;
 	}
 	
 	/**
@@ -97,9 +99,8 @@ public class DBConnection {
 	 * Purpose: Connects to the database and searches for a table entry - either username or email address - matching
 	 * 			the handle input. If both handle and password matches the values retrieved from the database the method 
 	 * 			returns true, otherwise the method returns false
-	 * @param handle
-	 * @param password
-	 * @return true/false
+	 * Input: handle and password as String
+	 * Outputs: boolean
 	 */
 	public boolean login( String handle, String password ) {
 		try {

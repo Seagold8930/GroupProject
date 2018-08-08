@@ -40,13 +40,19 @@ public class User {
 	
 	public void setUsername( String _username ) {
 		this.username = _username;
+		this.password = null;
+		this.email = null;
 	}
 	
 	public void setPassword( String _password ) {
+		this.username = null;
 		this.password = _password;
+		this.email = null;
 	}
 	
 	public void setEmail( String _email ) {
+		this.username = null;
+		this.password = null;
 		this.email = _email;
 	}
 	
