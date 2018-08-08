@@ -15,8 +15,19 @@ package application;
 import java.util.Date;
 
 public class Note {
-	private String noteID;
-	private String taskID;
+	private int noteID;
+	private int taskID;
+	private String noteName;
 	private String description;
 	
+	public Note(int nID, String desc) {
+		this.noteID = nID;
+		this.description = desc;
+	}
+	public void setTaskID(int tID) {
+		this.taskID = tID;
+	}
+	public String getNoteName() {
+		return this.noteName;
+	}
 }

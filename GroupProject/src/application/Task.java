@@ -15,7 +15,27 @@ package application;
 import java.util.List;
 
 public class Task {
-	private String taskID;
-	private String projectID;
+	private int taskID;
+	private int projectID;
+	private String taskName;
 	private List<Note> noteList;
+	
+	public Task(int tID) {
+		this.taskID = tID;
+	}
+	public void setProjectID(int pID) {
+		this.projectID = pID;
+	}
+	public void addNoteList(Note note) {		
+		this.noteList.add(note);
+	}
+	public String getTaskName() {
+		return this.taskName;
+	}
+	public Note getSpecificNote(int i) {
+		return this.noteList.get(i);
+	}
+	public List<Note> getNoteList() {
+		return this.noteList;
+	}
 }
