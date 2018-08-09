@@ -12,30 +12,22 @@
 
 package application;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Task {
 	private int taskID;
 	private int projectID;
 	private String taskName;
-	private List<Note> noteList;
+	private List<Note> noteList = new ArrayList();
 	
-	public Task(int tID) {
+	public Task(int tID, int pID, String name) {
 		this.taskID = tID;
-	}
-	public void setProjectID(int pID) {
 		this.projectID = pID;
+		this.taskName = name;
 	}
+	
 	public void addNoteList(Note note) {		
 		this.noteList.add(note);
-	}
-	public String getTaskName() {
-		return this.taskName;
-	}
-	public Note getSpecificNote(int i) {
-		return this.noteList.get(i);
-	}
-	public List<Note> getNoteList() {
-		return this.noteList;
 	}
 }
