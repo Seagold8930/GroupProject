@@ -42,8 +42,9 @@ public class StopwatchGUI extends JFrame {
 	private static StopwatchGUI frame;
 	private List<Task> taskList;
 	private Task taskInProgress;
-	private RuntimeAttributes attributes;
-	private JPanel contentPane;
+	private static RuntimeAttributes attributes;
+	private static JPanel contentPane;
+	private static JComboBox comboBox;
 	private Timer timer;
 	private long start;
 //	private final Action action = new SwingAction();
@@ -89,9 +90,15 @@ public class StopwatchGUI extends JFrame {
 		JMenu mnFiles = new JMenu("Files");
 		menuBar.add(mnFiles);
 		
-		JMenuItem mntmOpenProject = new JMenuItem("Create Task");
-		mnFiles.add(mntmOpenProject);
+		JMenuItem mntmCreateTask = new JMenuItem("Create Task");
+		mnFiles.add(mntmCreateTask);
 		
+		mntmCreateTask.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	new CreateTaskGUI(attributes.getUserToken()).setVisible(true);
+            }
+        });
 //		JMenuItem mntmNewMenuItem = new JMenuItem("Save Project");
 //		mnFiles.add(mntmNewMenuItem);
 //		
@@ -145,7 +152,7 @@ public class StopwatchGUI extends JFrame {
 		btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!timer.isRunning() && !attributes.isChanged() && attributes.isTaskSelected()) {
+                if (!stopwatch.isRunning() && !attributes.isChanged() && attributes.isTaskSelected()) {
                     attributes.setChanged(true);
                     stopwatch.setRunning(true);
                 	start = System.currentTimeMillis();
@@ -181,9 +188,8 @@ public class StopwatchGUI extends JFrame {
 		lblStopwatch.setBounds(188, 11, 73, 20);
 		contentPane.add(lblStopwatch);
 		
-		JComboBox comboBox = new JComboBox(DBConnection.getTaskNameList( attributes.getUserToken() ).toArray());
+		comboBox = new JComboBox(DBConnection.getTaskNameList( attributes.getUserToken() ).toArray());
 		comboBox.setBounds(10, 30, 124, 32);
-		//comboBox.setToolTipText("Test");
 		contentPane.add(comboBox);
 		
 		JLabel lblTaskSelection = new JLabel("Task Selection:");
@@ -244,6 +250,11 @@ public class StopwatchGUI extends JFrame {
                     JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
         } else
         	dispose();
+	}
+
+	public static void updateComboBox() {
+		List<String> list = DBConnection.getTaskNameList( attributes.getUserToken() );
+		comboBox = new JComboBox( list.toArray() );
 	}
 
 //	private class SwingAction extends AbstractAction {
