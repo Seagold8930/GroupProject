@@ -151,6 +151,7 @@ public class CreateTaskGUI extends JFrame {
 		contentPane.add(btnCancel);
 	}
 	public void createTask(String userToken, JTextField tName, JTextArea tDesc) {
+		// TODO - fix the following code
 		DBConnection.CreateTask(tName.getText(), tDesc.getText());
 	}
 	public void resetFields(JTextField tName, JTextArea tDesc) {

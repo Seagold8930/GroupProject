@@ -90,6 +90,7 @@ public class TrackerGUI extends JFrame {
 		JMenuItem mntmCreateTask = new JMenuItem("Create Task");
 		mntmCreateTask.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				loadCreateTask();
 			}
 		});
 		mnNewMenu.add(mntmCreateTask);
