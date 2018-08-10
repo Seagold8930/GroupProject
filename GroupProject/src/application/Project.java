@@ -12,11 +12,29 @@
 
 package application;
 
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * All code is NOT final code, only for testing purposes
+ * @author Aleisha
+ */
 public class Project {
-	private String projectID;
-	private String userID;
-	private List<Task> taskList;
+	private int projectID;
+	private String username;
+	private String projectName;
+	private List<Task> taskList = new ArrayList();
 	
+	public Project(int pID, String user, String pName) {
+		this.projectID = pID;
+		this.username = user;
+		this.projectName = pName;
+	}
+
+	public void addTaskList(Task task) {		
+		this.taskList.add(task);
+	}	
+	public String getProjectName() {
+		 return this.projectName;
+	}
 }

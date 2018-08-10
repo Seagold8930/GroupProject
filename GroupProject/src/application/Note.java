@@ -12,11 +12,26 @@
 
 package application;
 
-import java.util.Date;
-
+/**
+ * All code is NOT final code, only for testing purposes
+ * @author Aleisha
+ */
 public class Note {
-	private String noteID;
-	private String taskID;
-	private String description;
+	private int noteID;
+	private int taskID;
+	private String noteName; // don't know why we need this??
+	private String description; // bad name for what the note contains??
 	
+	public Note(int nID, int tID, String name, String desc) {
+		this.noteID = nID;
+		this.taskID = tID;
+		this.noteName = name;
+		this.description = desc;
+	}
+	public String getNoteName() {
+		return this.noteName;
+	}
+	public String getDescription() {
+		return this.description;
+	}
 }
