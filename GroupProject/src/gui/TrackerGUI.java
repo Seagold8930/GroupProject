@@ -35,10 +35,11 @@ public class TrackerGUI extends JFrame {
 
 	private static final URL ICON_URL = TrackerGUI.class.getResource("/resources/images/clockIcon.png");
 	private static final String LOGO = "/resources/images/clock_small.png";
-	private static final String README = "/DOCUMENTATION/README_test.txt"; // can't find file location??
+	private static final String README = "/DOCUMENTATION/README_test.txt"; // TODO can't find file location??
 	
 	private JPanel contentPane;
 	private JTable tblTracking;
+	private static String userToken;
 
 	/**
 	 * Launch the application.
@@ -47,7 +48,7 @@ public class TrackerGUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TrackerGUI frame = new TrackerGUI();
+					TrackerGUI frame = new TrackerGUI(userToken);
 					frame.setVisible(true);
 					frame.setIconImage(ImageIO.read( ICON_URL));	
 					frame.setTitle("GoldRush");
@@ -61,9 +62,9 @@ public class TrackerGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TrackerGUI() {
+	public TrackerGUI(String userToken) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 610, 453);
+		setBounds(100, 100, 450, 300);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -85,6 +86,13 @@ public class TrackerGUI extends JFrame {
 				logout();
 			}
 		});
+		
+		JMenuItem mntmCreateTask = new JMenuItem("Create Task");
+		mntmCreateTask.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		mnNewMenu.add(mntmCreateTask);
 		mnNewMenu.add(mntmLogout);
 		
 		JMenu mnHelp = new JMenu("Help");
@@ -103,7 +111,7 @@ public class TrackerGUI extends JFrame {
 		contentPane.setLayout(null);
 		
 		JComboBox<String> cbProjectSelect = new JComboBox<String>();
-		cbProjectSelect.setBounds(348, 37, 194, 20);
+		cbProjectSelect.setBounds(282, 39, 124, 20);
 		contentPane.add(cbProjectSelect);
 		addProjectsToCB(cbProjectSelect);
 		
@@ -120,7 +128,8 @@ public class TrackerGUI extends JFrame {
 
 		DefaultTableModel projTblModel = new DefaultTableModel();
 		tblTracking = new JTable(projTblModel);	
-		tblTracking.setBounds(301, 68, 283, 314);
+		tblTracking.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		tblTracking.setBounds(255, 70, 170, 159);
 		contentPane.add(tblTracking);
 		
 		// ----- START events
@@ -132,7 +141,7 @@ public class TrackerGUI extends JFrame {
 		// ----- END events
 	}
 	/**
-	 * 
+	 * select a project from the available projects assigned to the username
 	 * @param cbProjectSelect
 	 */
 	public void addProjectsToCB(JComboBox<String> cbProjectSelect) {
@@ -147,6 +156,7 @@ public class TrackerGUI extends JFrame {
 		task1.addNoteList(note1); task1.addNoteList(note2); task2.addNoteList(note3);
 		project1.addTaskList(task1); project1.addTaskList(task2);
 		// -----
+		// TODO add DB project/task retrieval and object instantiation
 		
 		cbProjectSelect.addItem("select project");
 		cbProjectSelect.addItem(project1.getProjectName());
@@ -209,10 +219,23 @@ public class TrackerGUI extends JFrame {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * method will close this window and sign the user out of the system.
+	 * This method will then call the LoginGUI frame
+	 */
 	private void logout() {
-		
+		// TODO
 	}
+	/**
+	 * this method closes the current window and loads the StopWatchGUI frame
+	 */
 	private void loadStopWatch() {
-		
+		// TODO
+	}
+	/**
+	 * this method closes the current window and loads the CreateTaskGUI frame
+	 */
+	private void loadCreateTask() {
+		// TODO
 	}
 }

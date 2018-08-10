@@ -15,6 +15,10 @@ package application;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * All code is NOT final code, only for testing purposes
+ * @author Aleisha
+ */
 public class Project {
 	private int projectID;
 	private String username;

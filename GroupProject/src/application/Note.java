@@ -12,6 +12,10 @@
 
 package application;
 
+/**
+ * All code is NOT final code, only for testing purposes
+ * @author Aleisha
+ */
 public class Note {
 	private int noteID;
 	private int taskID;
