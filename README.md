@@ -1,7 +1,7 @@
 # GroupProject
-# ==================================================================
+# =======================================
 # GoldRush - Timekeeping application version 10 August 2018
-# ==================================================================
+# =======================================
 
 This project involves app and database development with java 
 and MySQL. We will create an application that tracks time against 
@@ -16,7 +16,7 @@ username: john.doe
 
 password: 1234
 
-# ==================================================================
+# =======================================
 
 System Components
 Development components:
@@ -30,7 +30,7 @@ Development components:
 •	MySQL Workbench 6.3 CE v8.0.12 for Windows (x86, 64-bit)
 •	MySQL JDBC Driver v5.1.46
 
-# ==================================================================
+# =======================================
 
 Database components:
 
@@ -39,9 +39,10 @@ Database components:
 •	projectschema
 •	usercredentials table
 •	tasks table
+
 Both tables are included on DATABASE > dumps > Dump20180810
 
-# ==================================================================
+# =======================================
 
 Required libraries can be found inside the JARs folder if ran
 through Eclipse IDE. Right click JRE System Library > Build Path >
