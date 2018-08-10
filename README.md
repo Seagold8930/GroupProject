@@ -36,7 +36,7 @@ Database components:
 •	projectschema
 •	usercredentials table
 •	tasks table
-Both tables are included on 
+Both tables are included on DATABASE > dumps > Dump20180810
 ==================================================================
 
 Required libraries can be found inside the JARs folder if ran
