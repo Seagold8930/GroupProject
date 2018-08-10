@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import application.RuntimeAttributes;
 import application.ValidateInput;
 import db.DBConnection;
 import javafx.application.Platform;
@@ -135,9 +136,10 @@ public class LoginGUI {
                 
                 if( ValidateInput.validateUsername( txtUsername.getText() ) ) {
                 	if( authenticate( txtUsername.getText(), pwdPassword.getText() ) ) {
-	                	txtUsername.clear();
+	                	String token = txtUsername.getText();
+                		txtUsername.clear();
 	                    pwdPassword.clear();
-	                    //TODO
+                		transitionToStopwatch( token );
 	                } else {
 	                	lblWarning.setText( "Invalid username/password" );
 	                }
@@ -159,6 +161,11 @@ public class LoginGUI {
         return scene;
     }	
 
+	protected static void transitionToStopwatch(String token) {
+        frame.setVisible( false );
+        new StopwatchGUI( new RuntimeAttributes( token ) ).setVisible(true);
+	}
+
 	/**
 	 * private static boolean authenticate( String handle, String password )
 	 * Purpose: sends user input for authentication
@@ -166,8 +173,7 @@ public class LoginGUI {
 	 * Outputs: boolean
 	 */
 	private static boolean authenticate( String handle, String password ) {
-		DBConnection obj = new DBConnection();		
-		return obj.login( handle, password );
+		return DBConnection.login( handle, password );
 	}
 	
 	/**

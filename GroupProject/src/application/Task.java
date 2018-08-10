@@ -12,10 +12,83 @@
 
 package application;
 
-import java.util.List;
-
 public class Task {
-	private String taskID;
-	private String projectID;
-	private List<Note> noteList;
+	private int taskID;
+	private String username;
+	private String taskName;
+	private String taskDescription;
+	private String taskNote;
+	private boolean concluded;
+	
+	public Task() {
+		super();
+	}
+
+	public Task(int taskID, String username, String taskName, String taskDescription, String taskNote, boolean concluded) {
+		super();
+		this.taskID = taskID;
+		this.username = username;
+		this.taskName = taskName;
+		this.taskDescription = taskDescription;
+		this.taskNote = taskNote;
+		this.concluded = concluded;
+	}
+
+	public Task(String _username, String _taskName, String _description) {
+		this.username = _username;
+		this.taskName = _taskName;
+		this.taskDescription = _description;
+		this.taskNote = null;
+		this.concluded = false;
+	}
+
+	public int getTaskID() {
+		return taskID;
+	}
+
+	public void setTaskID(int taskID) {
+		this.taskID = taskID;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
+	public String getTaskDescription() {
+		return taskDescription;
+	}
+
+	public void setTaskDescription(String taskDescription) {
+		this.taskDescription = taskDescription;
+	}
+
+	public String getTaskNote() {
+		return taskNote;
+	}
+
+	public void setTaskNote(String taskNote) {
+		this.taskNote = taskNote;
+	}
+
+	public boolean isConcluded() {
+		return concluded;
+	}
+
+	public void setConcluded(boolean concluded) {
+		this.concluded = concluded;
+	}
+	
+	
 }

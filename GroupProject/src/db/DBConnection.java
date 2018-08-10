@@ -16,14 +16,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import application.*;
 import jbcrypt.BCrypt;
 
 public class DBConnection {
-	private String dbURL = "jdbc:mysql://localhost:3306/projectschema";
-	private String dbUsername = "root";
-	private String dbPassword = "";
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/projectschema";
+	private static final String DB_USERNAME = "root";
+	private static final String DB_PASSWORD = "";
 	
 	/**
 	 * public int checkCredentialsConflict( User user )
@@ -32,9 +34,9 @@ public class DBConnection {
 	 * Input: User object
 	 * Outputs: integer
 	 */
-	public int checkCredentialsConflict( User user ) {
+	public static int checkCredentialsConflict( User user ) {
 		try {
-			Connection connection = DriverManager.getConnection( dbURL, dbUsername, dbPassword );
+			Connection connection = DriverManager.getConnection( DB_URL, DB_USERNAME, DB_PASSWORD );
 			PreparedStatement prepStatement = connection.prepareStatement( "select * from usercredentials where username = ? or email = ?" );
 			
 			prepStatement.setString( 1, user.getUsername() );
@@ -72,9 +74,9 @@ public class DBConnection {
 	 * Input: User object
 	 * Outputs: boolean
 	 */
-	public boolean createUser( User user ) {
+	public static boolean createUser( User user ) {
 		try {
-			Connection connection = DriverManager.getConnection( dbURL, dbUsername, dbPassword );
+			Connection connection = DriverManager.getConnection( DB_URL, DB_USERNAME, DB_PASSWORD );
 			PreparedStatement prepStatement = connection.prepareStatement( "insert into usercredentials ( username, password, email ) values ( ?, ?, ? )" );
 			
 			prepStatement.setString( 1, user.getUsername() );
@@ -102,9 +104,9 @@ public class DBConnection {
 	 * Input: handle and password as String
 	 * Outputs: boolean
 	 */
-	public boolean login( String handle, String password ) {
+	public static boolean login( String handle, String password ) {
 		try {
-			Connection connection = DriverManager.getConnection( dbURL, dbUsername, dbPassword );
+			Connection connection = DriverManager.getConnection( DB_URL, DB_USERNAME, DB_PASSWORD );
 			PreparedStatement prepStatement = connection.prepareStatement( "select * from usercredentials where username = ? or email = ?" );
 			
 			prepStatement.setString( 1, handle );
@@ -136,30 +138,147 @@ public class DBConnection {
 		return false;
 	}
 	
-	/**
-	 *  
-	 * @param user
-	 * @param newPassword
-	 */
-	public void updatePassword( User user, String newPassword ) {
-		//TO DO
+//	public List reportProject( String userToken ) {
+//		List<Project> projectList = new ArrayList<>();
+//		
+//		try {
+//			Connection connection = DriverManager.getConnection( DB_URL, DB_USERNAME, DB_PASSWORD );
+//			PreparedStatement prepStatement = connection.prepareStatement( "select * from projects where username = ?" );
+//			
+//			prepStatement.setString( 1, userToken );
+//			ResultSet resultSet = prepStatement.executeQuery();
+//			
+//			while( resultSet.next() ) {
+//				Project project = new Project( resultSet.getString( "username" ), resultSet.getString( "projectname" ), resultSet.getString( "description" ) );
+//				projectList.add( project );
+//			}
+//				
+//			connection.close();
+//			prepStatement.close();
+//			
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return projectList;
+//	}
+	
+	public static List getTaskNameList(String username) {
+		List<String> taskList = new ArrayList<>();
+		
+		try {
+			Connection connection = DriverManager.getConnection( DB_URL, DB_USERNAME, DB_PASSWORD );
+			PreparedStatement prepStatement = connection.prepareStatement( "select * from tasks where username = ?" );
+			
+			prepStatement.setString( 1, username );
+			
+			ResultSet resultSet = prepStatement.executeQuery();
+			
+			while( resultSet.next() ) {
+				String taskName = resultSet.getString( "taskName" );
+				taskList.add( taskName );
+			}
+				
+			connection.close();
+			prepStatement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return taskList;
+	}
+
+	public static List<Task> getTaskList(String userToken) {
+		List<Task> taskList = new ArrayList<>();
+		
+		try {
+			Connection connection = DriverManager.getConnection( DB_URL, DB_USERNAME, DB_PASSWORD );
+			PreparedStatement prepStatement = connection.prepareStatement( "select * from tasks where username = ?" );
+			
+			prepStatement.setString( 1, userToken );
+			
+			ResultSet resultSet = prepStatement.executeQuery();
+			
+			while( resultSet.next() ) {
+				taskList.add(new Task(resultSet.getInt( "taskID" ), resultSet.getString( "username" ), resultSet.getString( "taskName" ), 
+						resultSet.getString( "description" ), resultSet.getString( "notes" ), resultSet.getBoolean("concluded")));
+			}
+				
+			connection.close();
+			prepStatement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return taskList;
+	}
+
+	public static void saveTaskToDatabase(Task task) {
+		try {
+			Connection connection = DriverManager.getConnection( DB_URL, DB_USERNAME, DB_PASSWORD );
+			PreparedStatement prepStatement = connection.prepareStatement( "update tasks set notes = ?, concluded = ? where taskID = ?" );
+			
+			prepStatement.setString( 1, task.getTaskNote() );
+			prepStatement.setBoolean( 2, task.isConcluded() );
+			prepStatement.setInt( 3, task.getTaskID() );
+			
+			prepStatement.execute();
+				
+			connection.close();
+			prepStatement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	/**
-	 * 
-	 * @param project
-	 */
-	public void createProject( Project project ) {
-		//TO DO
+	public static void createTask( String username, String taskName, String description ) {
+		Task task = new Task( username, taskName, description );
+		
+		try {
+			Connection connection = DriverManager.getConnection( DB_URL, DB_USERNAME, DB_PASSWORD );
+			PreparedStatement prepStatement = connection.prepareStatement( "insert into tasks ( username, taskName, description, notes, concluded ) values ( ?, ?, ?, ?, ? )" );
+			
+			prepStatement.setString( 1, task.getUsername() );
+			prepStatement.setString( 2, task.getTaskName() );
+			prepStatement.setString( 3, task.getTaskDescription() );
+			prepStatement.setString( 4, task.getTaskNote() );
+			prepStatement.setBoolean( 5, task.isConcluded() );
+			
+			prepStatement.execute();
+				
+			connection.close();
+			prepStatement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-	
-	/**
-	 * 
-	 * @param project
-	 */
-	public void updateProject( Project project ) {
-		//TO DO
-	}
-	
-	
+
+//	public static Task getTask(Task task) {
+//		Task dbTask;
+//		try {
+//			Connection connection = DriverManager.getConnection( DB_URL, DB_USERNAME, DB_PASSWORD );
+//			PreparedStatement prepStatement = connection.prepareStatement( "select * from tasks where username = ? and taskName = ?" );
+//			
+//			prepStatement.setString( 1, attributes.getUserToken() );
+//			//prepStatement.setString( 2, attributes.getProjectName() );
+//			prepStatement.setString( 2, selection );
+//			
+//			ResultSet resultSet = prepStatement.executeQuery();
+//			
+//			while( resultSet.next() ) {
+//				task = new Task(resultSet.getInt( "taskID" ), resultSet.getString( "username" ), resultSet.getString( "taskName" ), 
+//						resultSet.getString( "description" ), resultSet.getString( "notes" ), resultSet.getBoolean("concluded"));
+//			}
+//				
+//			connection.close();
+//			prepStatement.close();
+//			
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return dbTask;
+//	}
 }

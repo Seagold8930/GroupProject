@@ -18,7 +18,6 @@ public class User {
 	private String username;
 	private String password;
 	private String email;
-	private List<Project> projects;
 	
 	public User() {
 		this.username = null;

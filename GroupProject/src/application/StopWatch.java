@@ -1,22 +1,36 @@
-/**
- * Copyright© 2018 - A. Perry, A. Sirvid, D. Mota
- * 
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHORS DISCLAIMS ALL WARRANTIES
- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR
- * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
-
 package application;
 
-import java.sql.Time;
+import java.time.Duration;
 
 public class StopWatch {
-	private Time timeTotal; 
-	private Time timeStart;
-	private Time timeStop;
-	private Time timePause;
+	private boolean running;
+	private long pauseTime;
+	
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+
+	public long getPauseTime() {
+		return pauseTime;
+	}
+
+	public void setPauseTime(long pauseTime) {
+		this.pauseTime = pauseTime;
+	}
+	
+	public String stopwatch( long start ) {
+		long runningTime = (System.currentTimeMillis() - start) - this.pauseTime;
+        Duration duration = Duration.ofMillis(runningTime);
+        long hours = duration.toHours();
+        duration = duration.minusHours(hours);
+        long minutes = duration.toMinutes();
+        duration = duration.minusMinutes(minutes);
+        long seconds = duration.toMillis() / 1000;
+        
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+	}
 }

@@ -201,10 +201,8 @@ public class SignUpGUI {
 
 	private static boolean insertUserCredentials() {
 		User user = new User( txtUsername.getText(), BCrypt.hashpw( pwdPassword.getText(), BCrypt.gensalt() ), txtEmail.getText() );
-		DBConnection obj = new DBConnection();
-		
 		clearAllFields();
-		return obj.createUser( user );
+		return DBConnection.createUser( user );
 	}
 
 	private static void clearAllFields() {
